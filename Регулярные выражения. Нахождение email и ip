@@ -1,0 +1,42 @@
+using System;
+using System.Text.RegularExpressions;
+
+namespace Les4
+{
+    class Les4Work1
+    {
+        static bool EmailCheeck (string email)
+        {
+            var RegexEmail = new Regex(@"^[\w]+@[\w]+\.[\w]{2,3}$");
+            if (RegexEmail.IsMatch(email))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        static bool IpCheeck(string ip)
+        {
+            var RegexIp = new Regex(@"^[\d]{3}\.[\d]{3}\.[\d]{3}\.[\d]{3}$");
+            if (RegexIp.IsMatch(ip))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        static void Main (string [] args)
+        {
+            Console.WriteLine("Enter email: ");
+            string? mail = Console.ReadLine();
+            Console.WriteLine(EmailCheeck(mail));
+            Console.WriteLine("Enter Ip: ");
+            string? Ip = Console.ReadLine();
+            Console.WriteLine(IpCheeck(Ip));
+        }
+    }
+}
