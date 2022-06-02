@@ -38,7 +38,7 @@ namespace OOP
                     int s = new Random().Next(20000, 50000);
                     int a = new Random().Next(18, 65);
                     worker[i] = new Worker(names[i], a, s);
-                    if (worker[i].GetSalary() > 30000)
+                    if (worker[i].GetSalary() > 35000 && worker[i].GetAge() < 40)
                     {
                         Console.WriteLine($"name {worker[i].GetName()} \nage {worker[i].GetAge()} \nsalary {worker[i].GetSalary()}");
                         Console.WriteLine("---------------=)------");
