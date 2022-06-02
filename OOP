@@ -1,0 +1,49 @@
+using System;
+
+namespace OOP
+{
+    class Worker
+    {
+        string name;
+        int age;
+        int salary;
+
+        public Worker(string name, int age, int salary)
+        {
+            this.name = name;
+            this.age = age;
+            this.salary = salary;
+        }
+        public string GetName()
+        {
+            return this.name;
+        }
+        public int GetAge()
+        {
+            return this.age;
+        }
+        public int GetSalary()
+        {
+            return this.salary;
+        }
+    }
+    class Prog
+    {
+        static void Main()
+        {
+            string[] names = {"Ivan", "Petr", "Jeka", "Anna", "Mary", "Nikola", "Gena" };
+            Worker[] worker = new Worker[7];
+            for(int i = 0; i<worker.Length; i++)
+                {
+                    int s = new Random().Next(20000, 50000);
+                    int a = new Random().Next(18, 65);
+                    worker[i] = new Worker(names[i], a, s);
+                    if (worker[i].GetSalary() > 30000)
+                    {
+                        Console.WriteLine($"name {worker[i].GetName()} \nage {worker[i].GetAge()} \nsalary {worker[i].GetSalary()}");
+                        Console.WriteLine("---------------=)------");
+                    }
+                }
+        }
+    }
+}
