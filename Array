@@ -1,0 +1,28 @@
+using System;
+
+class Array
+{
+    static void Main(string[] args)
+    {
+        Console.Write("Enter to min: ");
+        int min = Convert.ToInt32(Console.ReadLine()) * 10;
+        Console.Write("Enter to max: ");
+        int max = Convert.ToInt32(Console.ReadLine()) * 10;
+        Console.Write("Enter to n: ");
+        int n = Convert.ToInt32(Console.ReadLine());
+        double[] num = new double[n];
+        Random rand = new Random();
+
+        for (int i = 0; i < num.Length; i++)
+        {
+            num[i] = Convert.ToDouble(rand.Next(min, max) / 10.0);
+            for (int j = 0; j < i; j++)
+            {
+                if (num[i] == num[j])
+                { i -= 1; }
+            }
+        }
+        for (int i = 0; i < num.Length; i++)
+            Console.WriteLine(num[i]);
+    }
+}
