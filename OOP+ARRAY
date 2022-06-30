@@ -1,0 +1,28 @@
+using System;
+namespace LesArray
+{
+    class Array
+    {
+        public string? [] array;
+        public Array (string? [] array)
+        {
+            this.array = array;
+        }
+        public void Get()
+        {
+            foreach (var s in array)
+                Console.WriteLine(s); 
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Enter to n: ");
+            string? n = Console.ReadLine();
+            string[] numbers = n.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries); ;
+            Array X = new Array(numbers);
+            X.Get();
+        }
+    }
+}
