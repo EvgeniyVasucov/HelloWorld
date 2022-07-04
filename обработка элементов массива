@@ -1,0 +1,39 @@
+using System;
+namespace LesArray
+{
+    class Array
+    {
+        public string? [] array;
+        public Array (string? [] array)
+        {
+            this.array = array;
+        }
+        public void Get()
+        {
+            var z = 0;
+            for (var i = 0 ; i< array.Length; i++)
+            {
+                Console.WriteLine("Sqrt = " + Math.Sqrt(Convert.ToInt32(array[i])));
+            }
+            var y = new Random().Next(0, array.Length);
+            var v = new Random().Next(0, array.Length);
+            while (y==v)
+            {
+                var p = new Random().Next(0, array.Length);
+                v = p;
+            }
+            Console.WriteLine((Convert.ToInt32(array[y])+ Convert.ToInt32(array[v]))/2);
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.Write("Enter to array: ");
+            string? arr = Console.ReadLine();
+            string[] numbers = arr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            Array X = new Array(numbers);
+            X.Get();
+        }
+    }
+}
