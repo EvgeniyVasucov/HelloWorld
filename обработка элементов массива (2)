@@ -1,0 +1,51 @@
+using System;
+namespace Task
+{
+    class Array
+    {
+        int[] arr; int n; int k;
+        public Array(int[] arr, int n, int k)
+        {
+            this.arr = arr; 
+            this.n = n;
+            this.k = k;
+        }
+        public void Get()
+        {
+            for (int i = 0; i < n; i++)
+            {
+                arr[i] = new Random().Next(0, 20);
+            }
+        }
+        public void GetA()
+        {
+            int sum1 = 0;
+            for (int j = 0; j < k; j++)
+            {
+                for (int i = n/k*j; i < n/k*(j+1); i++)
+                {
+                    Console.Write(arr[i] + " ");
+                    sum1 += arr[i];
+                }
+                int sum = sum1;
+                sum1 = 0;
+                Console.WriteLine();
+                Console.WriteLine($"Количество осадков за {j+1}/{k} часть месяца - " + sum + "мм");
+            }
+        }
+    }
+    class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("На сколько частей разделить месяц: ");
+            int k = Convert.ToInt32(Console.ReadLine());
+            int n = 30;
+            int[] arr = new int[n];
+            Array X = new(arr, n, k);
+            Console.WriteLine("Количество осадков за июнь месяц");
+            X.Get(); 
+            X.GetA();
+        }
+    }
+}
