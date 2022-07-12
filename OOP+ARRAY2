@@ -1,0 +1,87 @@
+using System;
+namespace Task
+{
+    class Array
+    {
+        int[] arr; int l; int n;
+
+        public Array(int[] arr, int l, int n)
+        {
+            this.arr = arr;
+            this.l = l;
+            this.n = n;
+        }
+        public int[] Get()
+        {
+            for (int i = 0; i < l; i++)
+            {
+                arr[i] = new Random().Next(0, 10);
+                Console.Write(arr[i] + " ");
+            }
+            Console.Write(" - Массив");
+            int[] NewArr = arr;
+            return NewArr;
+        }
+
+        public void GetH() //вариант а)
+        {
+            Console.WriteLine();
+            int i = 0;
+            while (i<l)
+            {
+                    if (arr[i] == n)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.Write(arr[i] + " ");
+                    }
+                i++;
+            }
+        }
+        public void GetI() //вариант б)
+        {
+            Console.WriteLine();
+            int i = 0;
+            int j = 0;
+            int n1 = 7;
+            while (i < l)
+            {
+                if (arr[i] == n1)
+                {
+                    j = i+1;
+                    break;
+                }
+                i++;
+            }
+            while (j < l)
+            {
+                if (arr[i] != n1 && arr[i] == arr[l - 1])
+                {
+                    break;
+                }
+                Console.Write(arr[j] + " ");
+                j++;
+            }
+        }
+    }
+}
+namespace UsingTask
+{
+    public class Program
+    {
+        static void Main()
+        {
+            Console.Write("Введите длину массива: ");
+            int l = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите значение n: ");
+            int n = Convert.ToInt32(Console.ReadLine());
+            int[] arr = new int[l];
+            Task.Array X = new(arr, l, n);
+            X.Get();
+            X.GetH();
+            X.GetI();
+        }
+    }
+}
