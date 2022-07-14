@@ -1,0 +1,59 @@
+namespace Task28
+{
+    class Program
+    {
+        int l;
+        public Program (int l) {this.l = l;}
+        public int[] GetArray()
+        {
+            int[] arr = new int[l];
+            for (int i = 0; i < l; i++)
+            {
+                arr[i] = new Random().Next(1, 11);
+                Console.Write(arr[i] + " ");
+            }
+            Console.WriteLine();
+            return arr;
+        }
+        public void SetArray()
+        {
+            int[] arr = GetArray();
+            int[] arr1 = GetArray();
+            int sum = 0;
+            int rev;
+            for (int i = 0, j = 0; i < l && j < l; i++, j++)
+            {
+                if (i % 2 == 0)
+                {
+                    rev = i;
+                    if (j == rev)
+                    {
+                        Console.Write(arr[i] + " ");
+                    }
+                }
+                else
+                { Console.Write(arr1[j] + " "); }
+            }
+            Console.WriteLine(" - Переписанный массив по п.п а)");
+            for (int i = 0; i < l; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    Console.Write(arr[i] + " ");
+                    sum++;
+                }
+            }
+            for (int j = 0; j < sum; j++)
+            { Console.Write(arr1[j] + " "); }
+            Console.WriteLine(" - Переписанный массив по п.п б)");
+        }
+    }
+    class TwoArray
+    {
+        static void Main()
+        {
+            Program X = new Program(10);
+            X.SetArray();
+        }
+    }
+}
