@@ -1,0 +1,67 @@
+using System;
+namespace Task4
+{
+    class Program
+    {
+        int[,] num; int b; int nr=3; int nc=3;
+
+        public Program(int b)
+        {
+            this.b = b;
+            int Rows = nr;
+            int columns = nc;
+            num = new int[nr, nc];
+            for (int i = 0; i < nr; i++)
+            {
+                for (int j = 0; j <nc; j++)
+                {
+                    num[i, j] = new Random().Next(0, 11);
+
+                    Console.Write($"{num[i, j]} \t");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+        public void ArrayA()
+        {
+            int a = new Random().Next(0, 3);
+            for (int i = 0; i < nr; i++)
+            {
+                for (int j = 0; j < nc; j++)
+                {
+                    num[a, 1] = 13;
+                    Console.Write($"{num[i, j]} \t");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("a)  " + num[a, 1]);
+            Console.WriteLine();
+        }
+        public void ArrayB()
+        {
+            int a = new Random().Next(0, 3);
+            int c = new Random().Next(0, 3);
+            for (int i = 0; i < nr; i++)
+            {
+                for (int j = 0; j < nc; j++)
+                {
+                    num[a, c] = b;
+                    Console.Write($"{num[i, j]} \t");
+                }
+                Console.WriteLine();
+            }
+        }
+    }
+    class Array2D
+    {
+        static void Main()
+        {
+            Console.Write("Enter to b: ");
+            int b = Convert.ToInt32(Console.ReadLine());
+            Program X = new Program(b);
+            X.ArrayA();
+            X.ArrayB();
+        }
+    }
+}
