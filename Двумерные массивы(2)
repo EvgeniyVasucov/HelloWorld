@@ -1,0 +1,42 @@
+using System;
+namespace Task21
+{
+    class Program
+    {
+        int[,] num; int nr=5; int nc=5;
+        public Program()
+        {
+            num = new int[nr, nc];
+            for (int i = 0; i < nr; i++)
+            {
+                for (int j = 0; j <nc; j++)
+                {
+                    num[i, j] = new Random().Next(1, 16);
+                    Console.Write($"{num[i, j]} \t");
+                }
+                Console.WriteLine("\n");
+            }
+        }
+        public void ArrayA()
+        {
+            Console.WriteLine((num[0, nc - 1] % 2 != 0 || num[nr-1, nc - 1] % 2 != 0) ? "true" : "false");
+            Console.WriteLine($"{num[0, nc-1]}");
+            Console.WriteLine($"{num[nr - 1, nc - 1]}");
+        }
+        public void ArrayB()
+        {
+            Console.WriteLine((num[0, 0] % 10 == 5 || num[nr - 1, 0] % 10 == 5) ? "true" : "false");
+            Console.WriteLine($"{num[0, 0]}");
+            Console.WriteLine($"{num[nr - 1, 0]}");
+        }
+    }
+    class Array2D
+    {
+        static void Main()
+        {
+            Program X = new Program();
+            X.ArrayA();
+            X.ArrayB();
+        }
+    }
+}
