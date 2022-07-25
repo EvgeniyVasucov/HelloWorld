@@ -1,0 +1,99 @@
+using System;
+namespace Task
+{
+    class Program
+    {
+        public int[,] num; int line1; int column1;
+        public Program(int[,] num, int line1, int column1)
+        { this.num = num; this.line1 = line1; this.column1 = column1; }
+        public void GetArray2D()
+        {
+            int column = column1;
+            int line = line1 - 1;
+            bool right = true;
+            bool left = true;
+            bool up = true;
+            bool down = true;
+            var nummer = 1;
+            int x = 0;
+            int y = 0;
+            while (nummer <= line1 * column1)
+            {
+                if (right == true)
+                {
+                    for (int i = 0; i < column; i++)
+                    {
+                        num[x, y] = nummer;
+                        y++;
+                        nummer++;
+                    }
+                    column -= 1;
+                    x += 1;
+                    down = true;
+                    y -= 1;
+                }
+                if (down == true)
+                {
+                    for (int j = 0; j < line; j++)
+                    {
+                        num[x, y] = nummer;
+                        x++;
+                        nummer++;
+                    }
+                    line -= 1;
+                    y -= 1;
+                    left = true;
+                    x -= 1;
+                }
+                if (left == true)
+                {
+                    for (int i = 0; i < column; i++)
+                    {
+                        num[x, y] = nummer;
+                        y--;
+                        nummer++;
+                    }
+                    column -= 1;
+                    x -= 1;
+                    up = true;
+                    y += 1;
+                }
+                if (up == true)
+                {
+                    for (int i = 0; i < line; i++)
+                    {
+                        num[x, y] = nummer;
+                        x--;
+                        nummer++;
+                    }
+                    line -= 1;
+                    x += 1;
+                    right = true;
+                    y += 1;
+                }
+            }
+        }
+        public void Show()
+        {
+            for (int i = 0; i < line1; i++)
+            {
+                for (int j = 0; j < column1; j++)
+                { Console.Write(num[i, j] + "\t"); }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+    }
+    class Array2D
+    {
+        static void Main()
+        {
+            int line1 = 5;
+            int column1 = 5;
+            int[,] num = new int[line1, column1];
+            Program X = new(num, line1, column1);
+            X.GetArray2D();
+            X.Show();
+        }
+    }
+}
