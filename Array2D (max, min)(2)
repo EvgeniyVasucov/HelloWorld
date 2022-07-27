@@ -1,0 +1,82 @@
+using System;
+namespace Task4_30
+{
+    class Program
+    {
+        int[,] array; int line; int coloumn; int years;
+        public Program(int[,] array, int line, int coloumn, int years)
+        {
+            this.array = array; this.line = line; this.coloumn = coloumn; this.years = years;
+        }
+        public int GetMaxTemp()
+        {
+            int[] array1 = new int[line * coloumn];
+            int k = 0;
+            for (int i = 0; i < line; i++)
+            {
+                for (int j = 0; j < coloumn; j++)
+                {
+                    Console.Write($"{array[i, j] = new Random().Next(20, 30)} \t");
+                    array1[k] = array[i, j];
+                    k++;
+                }
+                Console.WriteLine("\n");
+            }
+            int[] nums = new int[line * coloumn - 6];
+            int sum = 0;
+            for (int i = 0; i < line * coloumn - 6; i++)
+            {
+                for (int j = i; j < i + 7; j++)
+                { sum += array1[j]; }
+                nums[i] = sum;
+                sum = 0;
+            }
+            var max = 0;
+            var days = 0;
+            for (int i = 0; i < nums.Length; i++)
+            {
+                if (nums[i]>max)
+                {
+                    max = nums[i];
+                    days = i;
+                }
+            }
+            Console.WriteLine(max+" - summa temp 7 days");
+            Console.WriteLine($"Max temp with {days + 1} days (7-th days)");
+            Console.WriteLine("------------------------------------------------");
+            return max;
+        }
+        public void GetYears()
+        {
+            int[] summer = new int[years];
+            var max1 = 0;
+            var year = 0;
+            for (int i = 0; i < years; i++)
+            {
+                summer[i] = GetMaxTemp();
+                if (summer[i] > max1)
+                {
+                    max1 = summer[i];
+                    year = i+1;
+                }
+            }
+            Console.WriteLine(max1 + " max temp in 10 years" );
+            Console.WriteLine("in " + year + " year");
+            Console.WriteLine("*************************"); 
+        }
+    }
+    class Array2D
+    {
+        static void Main()
+        {
+            int line = 5;
+            int coloumn = 6;
+            int years = 10;
+            int[,] array = new int[line, coloumn];
+            Console.WriteLine("График температуры с 15 июля по 15 августа");
+            Console.WriteLine("------------------------------------------------");
+            Program Object = new(array, line, coloumn, years);
+            Object.GetYears();
+        }
+    }
+}
