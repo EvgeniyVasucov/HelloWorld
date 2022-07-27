@@ -1,0 +1,55 @@
+using System;
+namespace Task4_5
+{
+    class Program
+    {
+        int[,] array; int line; int coloumn;
+        public Program(int[,] array, int line, int coloumn)
+        {
+            this.array = array; this.line = line; this.coloumn = coloumn;
+        }
+        public void GetArray2D()
+        {
+            var max = 0; var min = 0;
+            var num = 0; var num1 = 0;
+            for (int i = 0; i < line; i++)
+            { 
+                for (int j = 0; j < coloumn; j++)
+                {
+                    Console.Write($"{array[i, j] = new Random().Next(0,5)} \t");
+                    if (array[i, 2] >= max)
+                    { 
+                        max = array[i, 2];
+                        num1 = i;
+                    }
+                }
+                Console.WriteLine("\n");
+            }
+            min = array[3, coloumn-1];
+
+            for (int j = coloumn - 1; j >= 0; j--)
+            {
+                if (array[3, j] <= min)
+                { 
+                    min = array[3, j]; 
+                    num = j;
+                }
+            }
+            Console.WriteLine(max + " - максимальный элемент третьего столбца");
+            Console.WriteLine(num1 + 1 + " - номер строки самого нижнего из них");
+            Console.WriteLine(min + " - минимальное значение среди элементов четвертой строки");
+            Console.WriteLine(num + 1 + " - номер столбц асамого левого из них");
+        }
+    }
+    class Array2D
+    {
+        static void Main()
+        {
+            int line = 6;
+            int coloumn = 6;
+            int[,] array = new int[line, coloumn];
+            Program Object = new(array, line, coloumn);
+            Object.GetArray2D();
+        }
+    }
+}
