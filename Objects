@@ -1,0 +1,38 @@
+using System;
+namespace Less5
+{
+    class Product
+    {
+        public int prise { get; set; }
+        public string name { get; set; }
+        public Product(int prise, string name)
+        {
+            this.prise = prise; this.name = name;
+        }
+    }
+    class Program
+    {
+        static void Check(Product first, Product second)
+        {
+            int dif = first.prise - second.prise;
+            if (dif > 0)
+            {
+                Console.WriteLine($"Товар {first.name} дороже товара {second.name} на {dif} рублей");
+            }
+            else if (dif < 0)
+            {
+                Console.WriteLine($"Товар {first.name} дешевле товара {second.name} на {Math.Abs(dif)} рублей");
+            }
+            else
+            {
+                Console.WriteLine($"Товар {first.name} и товар {second.name} одинаковой цены");
+            }
+        }
+        static void Main()
+        {
+            Product first = new(100, "Orange");
+            Product second = new(50, "Banana");
+            Program.Check(first, second);
+        }
+    }
+}
