@@ -1,0 +1,78 @@
+using System;
+namespace Less9_12
+{
+    class Array2D
+    {
+        int[,] array; int line; int coloumn;
+        public Array2D(int[,] array, int line, int coloumn)
+        {
+            this.array = array;
+            this.line = line;
+            this.coloumn = coloumn;
+        }
+        public void GetArray()
+        {
+            for (int i = 0; i < line; i++)
+            {
+                for (int j = 0; j < coloumn; j++)
+                {
+                    array[i, j] = new Random().Next(1, 25);
+                    Console.Write(array[i, j] + "\t");
+                }
+                Console.WriteLine("\n");
+            }
+            int[] arr1 = new int[coloumn];
+            for (int j = 0; j < coloumn; j++)
+            {
+                for (int i = 0; i < line; i++)
+                {
+                    if (array[i, j] % 2 == 0 )
+                    {
+                        arr1[j] = array[i, j];
+                        break;
+                    }
+                    if (array[i, j] % 2 != 0 && i==line-1 )
+                    {
+                        arr1[j] = 0;
+                        break;
+                    }
+                }
+            }
+            int[] arr2 = new int[line];
+            for (int i = 0; i < line; i++)
+            {
+                for (int j = coloumn-1; j >= 0; j--)
+                {
+                    if (array[i, j] % 2 != 0)
+                    {
+                        arr2[i] = array[i, j];
+                        break;
+                    }
+                    if (array[i, j] % 2 == 0 && j == 0)
+                    {
+                        arr2[i] = 0;
+                        break;
+                    }
+                }
+            }
+            Console.WriteLine("одномерный массив, каждый элемент которого равен первому четному элементу столбца:");
+            foreach (var s in arr1)
+            { Console.Write(s + " "); } 
+            Console.WriteLine();
+            Console.WriteLine("одномерный массив, каждый элемент которого равен последнему нечетному элементу строки:");
+            foreach (var q in arr2)
+            { Console.Write(q + " "); } 
+        }  
+    }
+    class Program
+    {
+        static void Main()
+        {
+            int line = 5;
+            int coloumn = 5;
+            int[,] array = new int[line, coloumn];
+            Array2D X = new (array, line, coloumn);
+            X.GetArray();
+        }
+    }
+}
