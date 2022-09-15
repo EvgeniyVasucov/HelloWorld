@@ -1,0 +1,36 @@
+using System;
+namespace LesQueue
+{
+    class Program
+    {
+        static void Main()
+        {
+            var clients = new Queue<Person>();
+            while (clients.Count<6)
+            {
+                Console.Write("Enter to name client: ");
+                clients.Enqueue(new Person(Console.ReadLine()));
+            }
+            Console.WriteLine("---------- Reception open ----------");
+            var practicNotary = new Notary();
+            practicNotary.TakeClient(clients);
+        }
+    }
+    class Person
+    {
+        public string Name { get; }
+        public Person(string name) => Name = name;
+    }
+    class Notary
+    {
+        public void TakeClient (Queue<Person>clients)
+        {
+            while (clients.Count>0)
+            {
+                var client = clients.Dequeue();
+                Console.WriteLine("Go to the reception: " + client.Name);
+            }
+            Console.WriteLine("-------- Reception is closed --------");
+        }
+    }
+}
