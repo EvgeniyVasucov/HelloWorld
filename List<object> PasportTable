@@ -1,0 +1,65 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Lesson
+{
+    class Program
+    {
+        static void Main()
+        {
+            int seria=0;
+            int nomer=0;
+            string name="";
+            Pasport p = new Pasport(seria, nomer, name);
+            p.GetPas();
+        }
+    }
+    class Pasport
+    {
+        public int Seria { get; set; }
+        public int Nomer { get; set; }
+        public string Name { get; set; }
+        public Pasport(int seria, int nomer, string name)
+        {
+            Seria = seria;
+            Nomer = nomer;
+            Name = name;
+        }
+        public void GetPas()
+        {
+            var pas = new List<object>();
+            for (int i = 0; i < 4; i++)
+            {
+                Console.Write("Введите ФИО: ");
+                string? name = Console.ReadLine();
+                Console.WriteLine("---------------------");
+                int seria = new Random().Next(1000, 9999);
+                Console.WriteLine("Серия " + seria);
+                int nomer = new Random().Next(100000, 999999);
+                Console.WriteLine("Номер " + nomer);
+                Console.WriteLine("ФИО " + name);
+                Console.WriteLine();
+                pas.Add(seria);
+                pas.Add(nomer);
+                pas.Add(name);
+            }
+            Console.Write("Введите серию для поиска: ");
+            int seria1 = Convert.ToInt32( Console.ReadLine());
+            object[] arr = new object[3];
+            int index = pas.IndexOf(seria1);
+           
+            if (index == -1)
+                Console.WriteLine("Не найдено!");
+            else
+            {
+                pas.CopyTo(index, arr, 0, 3);
+                foreach (var s in arr)
+                {
+                    Console.WriteLine(s);
+                }
+            }
+        }
+    }
+}
