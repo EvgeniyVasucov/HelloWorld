@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+class Prise
+{
+    public Dictionary<int, string> prise()
+    {
+        var drink = new Dictionary<int, string>()
+        {
+        { 10, "tea" },
+        { 20, "coffee" },
+        { 50, "whiskey" },
+        { 25, "milk" }
+        };
+        return drink;
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Enter to sum: ");
+        var sum = Convert.ToInt32(Console.ReadLine());
+        Dictionary<int, string> check = new Prise().prise(); 
+        foreach (var Drink in check)
+        {
+            if (Drink.Key <= sum)
+            {
+                Console.WriteLine($"sum: {Drink.Key}  drink: {Drink.Value}");
+            }
+        }
+    }
+}
