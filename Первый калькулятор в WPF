@@ -1,0 +1,123 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+ 
+namespace calc
+{
+    public partial class MainWindow : Window
+    {
+        string number1 = "";
+        string oper = "";
+        string number2 = "";
+        public MainWindow()
+        {
+            InitializeComponent();
+            foreach (var item in FrameCalc.Children)
+            {
+                if (item is Button)
+                {
+                    ((Button)item).Click += ActionButton;
+                }
+            }
+        }
+        private void ActionButton(object sender, RoutedEventArgs e)
+        {
+            string s = (string)((Button)e.OriginalSource).Content;
+            textArea.Text += s;
+            /*int x;*/ //цифра на которую кликнули
+            var check = int.TryParse(s, out int x);
+            if (check)
+            {
+                if (oper == "")
+                {
+                    number1 += s;
+                }
+                else
+                {
+                    number2 += s;
+                }
+            }
+            else
+            {
+                if (s == "=")
+                {
+                    GetResult();
+                }
+                else if (s == "C")
+                {
+                    number1 = "";
+                    number2 = "";
+                    oper = "";
+                    textArea.Text = "";
+                }
+                else if (s == "²√x")
+                {
+                    double result = Math.Sqrt(double.Parse(number1));
+                    textArea.Text = "";
+                    textArea.Text += result;
+                }
+                else if (s == "x²")
+                {
+                    double result = Math.Pow(double.Parse(number1), 2);
+                    textArea.Text = "";
+                    textArea.Text += result;
+                }
+                else if (s == ","&& oper == "")
+                {
+                    number1 += s;
+                }
+                else if (s == "," && oper != "")
+                {
+                    number2 += s;
+                }
+                else
+                {
+                    oper = s;
+                }
+            }
+        }
+        private void GetResult()
+        {
+            double n1 = double.Parse(number1);
+            if (number2 == "")
+                number2 = "1";
+            double n2 = double.Parse(number2);
+            double res = 0.0;
+            switch (oper)
+            {
+                case "+":
+                    res = n1 + n2;
+                    break;
+                case "-":
+                    res = n1 - n2;
+                    break;
+                case "x":
+                    res = n1 * n2;
+                    break;
+                case "÷":
+                    if (n2 == 0)
+                    {
+                        throw new Exception("Деление на ноль");
+                    }
+                    res = n1 / n2;
+                    break;
+            }
+            number1 = res.ToString();
+            textArea.Text = "";
+            textArea.Text += number1;
+            number1 = textArea.Text;
+            number2 = "";
+        }  
+    }
+}
