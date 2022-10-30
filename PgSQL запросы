@@ -1,0 +1,91 @@
+using Npgsql;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Less
+{
+    class SQL
+    {
+        static void Main()
+        {
+            var connect = "Host=localhost;Username=postgres;Port=5432;Password=postgres;Database=postgres";
+            var con = new NpgsqlConnection(connect);
+            con.Open();
+            int i = 0;
+            while (i<10)
+            {
+                if(i>=1) con.Open();
+                i++;
+                Console.WriteLine("Запросы: DELETE, INSERT, LIST");
+                Console.WriteLine("=============================");
+                Console.Write("Введите запрос: ");
+                string? request = Console.ReadLine();
+                if (request == "LIST")
+                {
+                    list();
+                }
+                else if (request == "DELETE")
+                {
+                    delete();
+                }
+                else if (request == "INSERT")
+                {
+                    insert();
+                }
+                else
+                {
+                    Console.WriteLine("Неверный запрос");
+                }
+            }
+            void list()
+            {
+                var cmd = new NpgsqlCommand("SELECT * from students", con);
+                var reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    Console.WriteLine("Номер\tНазвание товара\tоценка");
+                    foreach (var item in reader)
+                    {
+                        Console.WriteLine("{0}\t{1}\t{2}", reader["id"], reader["name"], reader["grade"]);
+                    }
+                }
+                else
+                    Console.WriteLine("Данных нет");
+                con.Close();
+            }
+            void delete()
+            {
+                Console.Write("Введите имя, которок хотите удалить: ");
+                string? requestName = Console.ReadLine();
+                var cmd = new NpgsqlCommand($"DELETE FROM students where name ='{requestName}'", con);
+                var ins = cmd.ExecuteNonQuery();
+                if (ins == 1)
+                {
+                    Console.WriteLine("Запись удалена");
+                }
+                else
+                    Console.WriteLine("Такого имени не существует");
+                con.Close();
+            }
+            void insert()
+            {
+                Console.Write("Введите имя, которое хотите добавить: ");
+                string? AddName = Console.ReadLine();
+                Console.Write($"Введите оценку, {AddName}: ");
+                int AddGrade = Convert.ToInt32(Console.ReadLine());
+                var cmd = new NpgsqlCommand($"INSERT INTO students(name, grade) values ('{AddName}','{AddGrade}')", con);
+                var ins = cmd.ExecuteNonQuery();
+                if (ins == 1)
+                {
+                    Console.WriteLine("Запись добавлена");
+                }
+                else
+                    Console.WriteLine("ошибка!");
+                con.Close();
+            }
+        }
+    }
+}
