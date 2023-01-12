@@ -1,0 +1,67 @@
+using System;
+using System.Collections.Generic;
+namespace Task
+{
+    class Program
+    {
+        static void Main()
+        {
+            int[] numbers = new int[0];
+            Arr X = new Arr(numbers);
+
+            X.Add(5);
+            X.Add(9);
+            X.Add(6);
+            X.Add(9);
+            X.Add(8);
+            X.Remove(10);
+            X.Show();
+            X.GetItem(2);
+            X.Lenght();
+        }
+    }
+
+    class Arr
+    {
+        public int[] numbers;
+        public Arr(int[] numbers) { this.numbers = numbers; }
+        public void Add(int num)
+        {
+            int[] arr = new int[numbers.Length + 1];
+            numbers.CopyTo(arr, 0);
+            arr[numbers.Length] = num;
+            numbers = arr;
+        }
+        public void Remove(int num)
+        {
+            var tmp = new List<int>(numbers);
+            var contains = tmp.Contains(num);
+            if (contains)
+            {
+                tmp.Remove(num);
+                numbers = tmp.ToArray();
+                Console.WriteLine($"Элемент '{num}' удалён");
+            }
+            else
+            {
+                numbers = tmp.ToArray();
+                Console.WriteLine($"Элемент '{num}' не найден");
+            }
+        }
+        public void Show()
+        {
+            Console.Write("Массив: ");
+            foreach (var s in numbers)
+                Console.Write(s + " ");
+        }
+        public void GetItem(int num)
+        {
+            Console.WriteLine();
+            Console.WriteLine($"Элемент по индексу: {num + 1} = {numbers[num]}");
+        }
+        public void Lenght()
+        {
+            Console.WriteLine($"Длина массива: {numbers.Length}");
+        }
+    }
+}
