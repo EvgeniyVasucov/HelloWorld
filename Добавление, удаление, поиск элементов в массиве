@@ -5,10 +5,8 @@ namespace Task
     class Program
     {
         static void Main()
-        {
-            int[] numbers = new int[0];
-            Arr X = new Arr(numbers);
-
+        {     
+            Arr<int> X = new Arr<int>();
             X.Add(5);
             X.Add(9);
             X.Add(6);
@@ -20,21 +18,20 @@ namespace Task
             X.Lenght();
         }
     }
-
-    class Arr
+    class Arr <T>
     {
-        public int[] numbers;
-        public Arr(int[] numbers) { this.numbers = numbers; }
-        public void Add(int num)
+        T[] numbers;
+        public Arr() { numbers = new T[0]; }
+        public void Add(T num)
         {
-            int[] arr = new int[numbers.Length + 1];
+            T[] arr = new T[numbers.Length + 1];
             numbers.CopyTo(arr, 0);
             arr[numbers.Length] = num;
             numbers = arr;
         }
-        public void Remove(int num)
+        public void Remove(T num)
         {
-            var tmp = new List<int>(numbers);
+            var tmp = new List<T>(numbers);
             var contains = tmp.Contains(num);
             if (contains)
             {
