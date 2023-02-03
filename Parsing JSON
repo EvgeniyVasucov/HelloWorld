@@ -1,0 +1,34 @@
+using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.IO;
+using System.Net;
+HttpClient httpClient = new HttpClient();
+string request = "https://keysystems.ru/files/misc/tasks/template.json";
+HttpResponseMessage response =
+    (await httpClient.GetAsync(request)).EnsureSuccessStatusCode();
+string responseBody = await response.Content.ReadAsStringAsync();
+
+Text? restoredJson = JsonSerializer.Deserialize<Text>(responseBody);
+//Console.WriteLine(restoredJson?.Tables[0].Rows[0][1]);
+Console.WriteLine(restoredJson?.Tables[0].DeletedRows);
+
+if (restoredJson?.Tables[0].DeletedRows != null)
+{
+    Console.WriteLine(restoredJson?.Tables[0].DeletedRows[0]);
+}
+else
+    Console.WriteLine("Нет значений");
+
+public class Text
+{
+    public string? DataSetName { get; set; }
+    public List<Table>? Tables { get; set; }
+}
+public class Table
+{
+    public string? TableName { get; set; }
+    public string[]? Columns { get; set; }
+    public object[][]? Rows { get; set; }
+    public List<string>? DeletedRows { get; set; }
+}
