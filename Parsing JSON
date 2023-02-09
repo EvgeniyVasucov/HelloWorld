@@ -1,25 +1,75 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.IO;
 using System.Net;
-HttpClient httpClient = new HttpClient();
-string request = "https://keysystems.ru/files/misc/tasks/template.json";
-HttpResponseMessage response =
-    (await httpClient.GetAsync(request)).EnsureSuccessStatusCode();
-string responseBody = await response.Content.ReadAsStringAsync();
-
-Text? restoredJson = JsonSerializer.Deserialize<Text>(responseBody);
-//Console.WriteLine(restoredJson?.Tables[0].Rows[0][1]);
-Console.WriteLine(restoredJson?.Tables[0].DeletedRows);
-
-if (restoredJson?.Tables[0].DeletedRows != null)
+using Newtonsoft.Json;
+using System.Data;
+using System.Net.Http;
+using System.Net.Http.Json;
+class Program
 {
-    Console.WriteLine(restoredJson?.Tables[0].DeletedRows[0]);
-}
-else
-    Console.WriteLine("Нет значений");
+    static HttpClient httpClient = new HttpClient();
+    static async Task Main()
+    {
+        // получаем ответ
+        Text? text = await httpClient.GetFromJsonAsync<Text>("https://keysystems.ru/files/misc/tasks/template.json");
 
+        DataSet dataSet = new DataSet(text?.DataSetName);
+        DataTable dataTable = new DataTable(text?.Tables[0].TableName);
+
+
+        DataColumn Name = new DataColumn("Name", typeof(string));
+        DataColumn SurName = new DataColumn("SurName", typeof(string));
+        DataColumn Age = new DataColumn("Age", typeof(int));
+
+        dataTable.Columns.AddRange(new DataColumn[] { Name, SurName, Age });
+
+        DataRow row1 = dataTable.NewRow();
+        for(int i = 0; i< text?.Tables[0].Columns.Length; i++)
+        {
+            row1["Name"] = text?.Tables[0].Columns[i];
+            dataTable.Rows.Add(row1);
+
+        }
+
+        DataRow row2 = dataTable.NewRow();
+        row2["Name"] = "Mary";
+        row2["Surname"] = "Genrison";
+        row2["Age"] = 23;
+
+        DataRow row3 = dataTable.NewRow();
+        row3["Name"] = "Evgen";
+        row3["Surname"] = "Genrison";
+        row3["Age"] = 33;
+
+        dataTable.Rows.Add(row2);
+        dataTable.Rows.Add(row3);
+
+        dataSet.Tables.Add(dataTable);
+
+        foreach (DataTable table in dataSet.Tables)
+        {
+            Console.WriteLine(dataSet.DataSetName);
+            Console.WriteLine(dataTable.TableName);
+            foreach (DataRow row in table.Rows)
+            {
+                foreach (DataColumn column in table.Columns)
+                {
+                    Console.Write(column + " ");
+                    Console.WriteLine(row[column]);
+                }
+            }
+        }
+
+    }
+}
 public class Text
 {
     public string? DataSetName { get; set; }
@@ -30,5 +80,5 @@ public class Table
     public string? TableName { get; set; }
     public string[]? Columns { get; set; }
     public object[][]? Rows { get; set; }
-    public List<string>? DeletedRows { get; set; }
+    public object? DeletedRows { get; set; }
 }
