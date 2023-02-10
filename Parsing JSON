@@ -22,52 +22,42 @@ class Program
         Text? text = await httpClient.GetFromJsonAsync<Text>("https://keysystems.ru/files/misc/tasks/template.json");
 
         DataSet dataSet = new DataSet(text?.DataSetName);
-        DataTable dataTable = new DataTable(text?.Tables[0].TableName);
+        DataTable dataTable = new DataTable(text?.Tables?[0].TableName);
 
+        DataColumn Columns = new DataColumn("Columns", typeof(string));
+        DataColumn Row = new DataColumn("Row", typeof(string));
 
-        DataColumn Name = new DataColumn("Name", typeof(string));
-        DataColumn SurName = new DataColumn("SurName", typeof(string));
-        DataColumn Age = new DataColumn("Age", typeof(int));
+        dataTable.Columns.AddRange(new DataColumn[] { Columns, Row });
 
-        dataTable.Columns.AddRange(new DataColumn[] { Name, SurName, Age });
-
-        DataRow row1 = dataTable.NewRow();
-        for(int i = 0; i< text?.Tables[0].Columns.Length; i++)
+        for (int j = 0; j < 1; j++)
         {
-            row1["Name"] = text?.Tables[0].Columns[i];
-            dataTable.Rows.Add(row1);
-
+            for (int i = 0; i < text?.Tables?[0].Columns?.Length; i++)
+            {
+                DataRow row1 = dataTable.NewRow();
+                row1["Columns"] = text?.Tables?[0].Columns?[i];
+               
+                DataRow row2 = dataTable.NewRow();
+                row2["Row"] = text?.Tables?[0].Rows?[0][i];
+                dataTable.Rows.Add(row1);
+                dataTable.Rows.Add(row2);
+            }            
         }
-
-        DataRow row2 = dataTable.NewRow();
-        row2["Name"] = "Mary";
-        row2["Surname"] = "Genrison";
-        row2["Age"] = 23;
-
-        DataRow row3 = dataTable.NewRow();
-        row3["Name"] = "Evgen";
-        row3["Surname"] = "Genrison";
-        row3["Age"] = 33;
-
-        dataTable.Rows.Add(row2);
-        dataTable.Rows.Add(row3);
 
         dataSet.Tables.Add(dataTable);
 
+        Console.WriteLine(dataSet.DataSetName);
         foreach (DataTable table in dataSet.Tables)
         {
-            Console.WriteLine(dataSet.DataSetName);
             Console.WriteLine(dataTable.TableName);
             foreach (DataRow row in table.Rows)
             {
                 foreach (DataColumn column in table.Columns)
                 {
-                    Console.Write(column + " ");
+                    //Console.Write(column + " ");
                     Console.WriteLine(row[column]);
                 }
             }
         }
-
     }
 }
 public class Text
