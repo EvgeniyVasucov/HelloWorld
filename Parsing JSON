@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Net.Http.Json;
 class Program
@@ -17,6 +16,7 @@ class Program
         // создаем столбцы для таблицы dataTable
         DataColumn Columns = new DataColumn("COLUMN", typeof(string));
         DataColumn Row = new DataColumn("ROW", typeof(string));
+        //Row.DefaultValue = "null"; // значение по умолчанию
         dataTable.Columns.AddRange(new DataColumn[] { Columns, Row });
 
         for (int j = 0; j < 1; j++)
@@ -24,18 +24,29 @@ class Program
             for (int i = 0; i < text?.Tables?[0].Columns?.Length; i++)
             {
                 DataRow row = dataTable.NewRow();
-                row.ItemArray = new object[] { text?.Tables?[0].Columns?[i], text?.Tables?[0].Rows?[0][i]};
+                row.ItemArray = new object[] { text.Tables?[0].Columns?[i], text?.Tables?[0].Rows?[0][i]};
                 dataTable.Rows.Add(row); //добавляем строки
             }            
         }
         //вывод
-        foreach (DataRow r in dataTable.Rows)
+        Console.Write("COLUMN\t\tROW\t");
+        Console.WriteLine();
+        foreach (DataTable table in dataSet.Tables)
         {
-            foreach (var cell in r.ItemArray)
-                Console.Write("{0}\t", cell);
-            Console.WriteLine();
+            foreach (DataRow stroka in table.Rows)
+            {
+                foreach(var cell1 in table.Columns)
+                {
+                    foreach (var cell in stroka.ItemArray)
+                    {
+                        Console.Write(" {0}\t\t", cell); 
+                    }
+                    Console.WriteLine();
+                }
+                
+            }
+            Console.Read();
         }
-        Console.Read();
     }
 }
 public class Text
