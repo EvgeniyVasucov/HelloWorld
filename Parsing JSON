@@ -24,9 +24,9 @@ class Program
             for (int i = 0; i < text?.Tables?[0].Columns?.Length; i++)
             {
                 DataRow row = dataTable.NewRow();
-                row.ItemArray = new object[] { text.Tables?[0].Columns?[i], text?.Tables?[0].Rows?[0][i]};
+                row.ItemArray = new object[] { text?.Tables?[0].Columns?[i], text?.Tables?[0].Rows?[0][i] };
                 dataTable.Rows.Add(row); //добавляем строки
-            }            
+            }
         }
         //вывод
         Console.Write("COLUMN\t\tROW\t");
@@ -35,14 +35,11 @@ class Program
         {
             foreach (DataRow stroka in table.Rows)
             {
-                foreach(var cell1 in table.Columns)
+                foreach (var cell in stroka.ItemArray)
                 {
-                    foreach (var cell in stroka.ItemArray)
-                    {
-                        Console.Write(" {0}\t\t", cell); 
-                    }
-                    Console.WriteLine();
+                    Console.Write(" {0}\t\t", cell);
                 }
+                Console.WriteLine();
             }
         }
         Console.Read();
