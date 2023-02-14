@@ -10,23 +10,25 @@ class Program
         Text? text = await httpClient.GetFromJsonAsync<Text>("https://keysystems.ru/files/misc/tasks/template.json");
         //создаем DataSet таблицы
         DataSet dataSet = new DataSet(text?.DataSetName);
-        for (int l = 0; l< 5; l++)
+        for (int l = 0; l < 5; l++)
         {
             DataTable dataTable = new DataTable(text?.Tables?[l].TableName);
             dataSet.Tables.Add(dataTable); // добавляем таблицу в dataset
             // создаем столбцы для таблицы dataTable
-            DataColumn Columns = new DataColumn("COLUMN", typeof(string));
-            DataColumn Row = new DataColumn("ROW", typeof(string));
+            DataColumn Columns = new DataColumn("Columns", typeof(string));
+            DataColumn Row = new DataColumn("Row", typeof(string));
+            DataColumn DeletedRows = new DataColumn("DeletedRows", typeof(string));
             //Row.DefaultValue = "null"; // значение по умолчанию
-            dataTable.Columns.AddRange(new DataColumn[] { Columns, Row });
-
-                for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
-                {
-                    DataRow row = dataTable.NewRow();
-                    row.ItemArray = new object[] { text?.Tables?[l].Columns?[i], text?.Tables?[l].Rows?[0][i] };
-                    dataTable.Rows.Add(row); //добавляем строки
-                }
+            dataTable.Columns.AddRange(new DataColumn[] { Columns, Row, DeletedRows });
+            // создаем строки
+            for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
+            {
+                DataRow row = dataTable.NewRow();
+                row.ItemArray = new object[] { text?.Tables?[l].Columns?[i], text?.Tables?[l].Rows?[0][i], text?.Tables?[0].DeletedRows[0] };
+                dataTable.Rows.Add(row); //добавляем строки
+            }
         }
+
         //вывод
         Console.WriteLine(text?.DataSetName);
         foreach (DataTable table in dataSet.Tables)
@@ -47,6 +49,7 @@ class Program
         Console.Read();
     }
 }
+//создаем дополнительные классы для объектов JSON
 public class Text
 {
     public string? DataSetName { get; set; }
@@ -55,7 +58,7 @@ public class Text
 public class Table
 {
     public string? TableName { get; set; }
-    public string[]? Columns { get; set; }
+    public object[]? Columns { get; set; }
     public object[][]? Rows { get; set; }
-    public object? DeletedRows { get; set; }
+    public object[]? DeletedRows { get; set; }
 }
