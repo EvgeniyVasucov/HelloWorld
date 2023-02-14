@@ -43,10 +43,9 @@ class Program
                     }
                     Console.WriteLine();
                 }
-                
             }
-            Console.Read();
         }
+        Console.Read();
     }
 }
 public class Text
