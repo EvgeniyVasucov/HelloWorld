@@ -8,31 +8,32 @@ class Program
     {
         // получаем ответ по ссылке
         Text? text = await httpClient.GetFromJsonAsync<Text>("https://keysystems.ru/files/misc/tasks/template.json");
-        //создаем DataSet таблицу
+        //создаем DataSet таблицы
         DataSet dataSet = new DataSet(text?.DataSetName);
-        DataTable dataTable = new DataTable(text?.Tables?[0].TableName);
-        // добавляем таблицу в dataset
-        dataSet.Tables.Add(dataTable);
-        // создаем столбцы для таблицы dataTable
-        DataColumn Columns = new DataColumn("COLUMN", typeof(string));
-        DataColumn Row = new DataColumn("ROW", typeof(string));
-        //Row.DefaultValue = "null"; // значение по умолчанию
-        dataTable.Columns.AddRange(new DataColumn[] { Columns, Row });
-
-        for (int j = 0; j < 1; j++)
+        for (int l = 0; l< 5; l++)
         {
-            for (int i = 0; i < text?.Tables?[0].Columns?.Length; i++)
-            {
-                DataRow row = dataTable.NewRow();
-                row.ItemArray = new object[] { text?.Tables?[0].Columns?[i], text?.Tables?[0].Rows?[0][i] };
-                dataTable.Rows.Add(row); //добавляем строки
-            }
+            DataTable dataTable = new DataTable(text?.Tables?[l].TableName);
+            dataSet.Tables.Add(dataTable); // добавляем таблицу в dataset
+            // создаем столбцы для таблицы dataTable
+            DataColumn Columns = new DataColumn("COLUMN", typeof(string));
+            DataColumn Row = new DataColumn("ROW", typeof(string));
+            //Row.DefaultValue = "null"; // значение по умолчанию
+            dataTable.Columns.AddRange(new DataColumn[] { Columns, Row });
+
+                for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
+                {
+                    DataRow row = dataTable.NewRow();
+                    row.ItemArray = new object[] { text?.Tables?[l].Columns?[i], text?.Tables?[l].Rows?[0][i] };
+                    dataTable.Rows.Add(row); //добавляем строки
+                }
         }
         //вывод
-        Console.Write("COLUMN\t\tROW\t");
-        Console.WriteLine();
+        Console.WriteLine(text?.DataSetName);
         foreach (DataTable table in dataSet.Tables)
         {
+            Console.WriteLine(table.TableName);
+            Console.Write("COLUMN\t\tROW\t");
+            Console.WriteLine();
             foreach (DataRow stroka in table.Rows)
             {
                 foreach (var cell in stroka.ItemArray)
@@ -41,6 +42,7 @@ class Program
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine("==========================");
         }
         Console.Read();
     }
@@ -57,4 +59,3 @@ public class Table
     public object[][]? Rows { get; set; }
     public object? DeletedRows { get; set; }
 }
-
