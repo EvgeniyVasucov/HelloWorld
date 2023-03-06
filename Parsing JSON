@@ -1,60 +1,96 @@
-using System;
+using Newtonsoft.Json;
 using System.Data;
-using System.Net.Http.Json;
 class Program
 {
-    static HttpClient httpClient = new HttpClient();
-    static async Task Main(string[] args)
+    static async Task Main()
     {
-        // получаем ответ по ссылке
-        Text? text = await httpClient.GetFromJsonAsync<Text>("https://keysystems.ru/files/misc/tasks/template.json");
-        //создаем DataSet таблицы
-        DataSet dataSet = new DataSet(text?.DataSetName);
-        for (int l = 0; l < 5; l++)
+        Dictionary<int, Type> typeByNumber = new Dictionary<int, Type>()
+        {
+        {0,typeof(Int32)},
+        {1,typeof(Object)},
+        {2,typeof(DBNull)},
+        {3,typeof(Boolean)},
+        {4,typeof(Char)},
+        {5,typeof(SByte)},
+        {6,typeof(Byte)},
+        {7,typeof(Int16)},
+        {8,typeof(UInt16)},
+        {9,typeof(Int32)},
+        {10,typeof(UInt32)},
+        {11,typeof(Int64)},
+        {12,typeof(UInt64)},
+        {13,typeof(Single)},
+        {14,typeof(Double)},
+        {15,typeof(Decimal)},
+        {16,typeof(DateTime)},
+        {18,typeof(String)},
+        {19,typeof(Guid)},
+        {0x8000,typeof(Array)},
+        };
+        HttpClient httpClient = new HttpClient();
+        string request = "https://keysystems.ru/files/misc/tasks/doc1.json";
+        HttpResponseMessage response = (await httpClient.GetAsync(request)).EnsureSuccessStatusCode();
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        Text text = JsonConvert.DeserializeObject<Text>(responseBody)!;
+        DataSet dataSet = new DataSet(text.DataSetName);
+        for (int l = 0; l < text.Tables.Count(); l++)
         {
             DataTable dataTable = new DataTable(text?.Tables?[l].TableName);
             dataSet.Tables.Add(dataTable); // добавляем таблицу в dataset
-            // создаем столбцы для таблицы dataTable
-            DataColumn Columns = new DataColumn("Columns", typeof(string));
-            DataColumn Row = new DataColumn("Row", typeof(string));
-            DataColumn DeletedRows = new DataColumn("DeletedRows", typeof(string));
-            //Row.DefaultValue = "null"; // значение по умолчанию
-            dataTable.Columns.AddRange(new DataColumn[] { Columns, Row, DeletedRows });
-            // создаем строки
+            foreach (var item in text?.Tables?[l].Columns)
+            {
+                string[] itemSptlit = item.ToString().Split(":");
+                dataTable.Columns.Add(itemSptlit[0], typeByNumber[Convert.ToInt32(itemSptlit[1])]);
+            }
+            foreach (DataColumn item in dataTable.Columns)
+            {
+                item.AllowDBNull = true;
+            }
+            DataRow row = dataTable.NewRow();
             for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
             {
-                DataRow row = dataTable.NewRow();
-                row.ItemArray = new object[]
+                if (dataTable.Columns[i].DataType != typeof(DateTime) 
+                    && dataTable.Columns[i].DataType != typeof(string) 
+                    && dataTable.Columns[i].DataType != typeof(Guid))
                 {
-                        text?.Tables?[l].Columns?[i],
-                        text?.Tables?[l].Rows?[0][i]
-                };
-                //if (text?.Tables?[l].DeletedRows.Length != 0)
-                //{ row.ItemArray = new object[] { text?.Tables?[l].DeletedRows[i] }; }
-                dataTable.Rows.Add(row); //добавляем строки
-            }
-        }
-        //вывод
-        Console.WriteLine(text?.DataSetName);
-        foreach (DataTable table in dataSet.Tables)
-        {
-            Console.WriteLine(table.TableName);
-            Console.Write("COLUMN\t\t\tROW\t\tDeletedRows");
-            Console.WriteLine();
-            foreach (DataRow stroka in table.Rows)
-            {
-                foreach (var cell in stroka.ItemArray)
-                {
-                    Console.Write(" {0}\t\t", cell);
+                    var x = text?.Tables?[l].Rows?[0][i] != null 
+                        ? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString(), dataTable.Columns[i].DataType) 
+                        : null;
+                    row[i] = x != null ? x : DBNull.Value;
+                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}");
                 }
-                Console.WriteLine();
+                else
+                {
+                    var x = text?.Tables?[l].Rows?[0][i];
+                    row[i] = x != null ? x : DBNull.Value;
+                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}");
+                }
+               
             }
-            Console.WriteLine("==========================");
+            dataTable.Rows.Add(row);
         }
-        Console.Read();
+        Console.WriteLine();
+        //вывод
+        //Console.WriteLine(text?.DataSetName);
+        //foreach (DataTable table in dataSet.Tables)
+        //{
+        //    Console.WriteLine(table.TableName);
+
+        //    foreach (DataRow stroka in table.Rows)
+        //    {
+        //        foreach (var cell in stroka.ItemArray)
+        //        {
+        //            Console.Write(" {0}\t\t", cell);
+        //        }
+        //        Console.WriteLine();
+        //    }
+        //    Console.WriteLine("==========================");
+        //}
+        //Console.Read();
     }
 }
-//создаем дополнительные классы для объектов JSON
+
 public class Text
 {
     public string? DataSetName { get; set; }
