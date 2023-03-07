@@ -28,68 +28,77 @@ class Program
         {0x8000,typeof(Array)},
         };
         HttpClient httpClient = new HttpClient();
+
         string request = "https://keysystems.ru/files/misc/tasks/doc1.json";
         HttpResponseMessage response = (await httpClient.GetAsync(request)).EnsureSuccessStatusCode();
         string responseBody = await response.Content.ReadAsStringAsync();
+        GetDataSet(responseBody);  // создание 1-й таблицы DataSet
 
-        Text text = JsonConvert.DeserializeObject<Text>(responseBody)!;
-        DataSet dataSet = new DataSet(text.DataSetName);
-        for (int l = 0; l < text.Tables.Count(); l++)
+        string request2 = "https://keysystems.ru/files/misc/tasks/doc2.json";
+        HttpResponseMessage response2 = (await httpClient.GetAsync(request2)).EnsureSuccessStatusCode();
+        string responseBody2 = await response2.Content.ReadAsStringAsync();
+        GetDataSet(responseBody2);  // создание 2-й таблицы DataSet
+
+        void GetDataSet(string responseBody)
         {
-            DataTable dataTable = new DataTable(text?.Tables?[l].TableName);
-            dataSet.Tables.Add(dataTable); // добавляем таблицу в dataset
-            if (text?.Tables?[l].Columns == null) continue; 
-            foreach (var item in text?.Tables?[l].Columns)
+            Text text = JsonConvert.DeserializeObject<Text>(responseBody)!;
+            DataSet dataSet = new DataSet(text.DataSetName);
+            for (int l = 0; l < text.Tables.Count(); l++)
             {
-                string[] itemSptlit = item.ToString().Split(":");
-                dataTable.Columns.Add(itemSptlit[0], typeByNumber[Convert.ToInt32(itemSptlit[1])]);
-            }
-            foreach (DataColumn item in dataTable.Columns)
-            {
-                item.AllowDBNull = true;
-            }
-            DataRow row = dataTable.NewRow();
-            if (text?.Tables?[l].Rows == null) continue;
-            for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
-            {
-                if (dataTable.Columns[i].DataType != typeof(DateTime) 
-                    && dataTable.Columns[i].DataType != typeof(string) 
-                    && dataTable.Columns[i].DataType != typeof(Guid))
+                DataTable dataTable = new DataTable(text?.Tables?[l].TableName);
+                dataSet.Tables.Add(dataTable); // добавляем таблицу в dataset
+                if (text?.Tables?[l].Columns == null || text?.Tables?[l].Rows == null) continue; // проверка на null столбцов и строк 
+                foreach (var item in text?.Tables?[l].Columns)
                 {
-                    var x = text?.Tables?[l].Rows?[0][i] != null 
-                        ? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString(), dataTable.Columns[i].DataType) 
-                        : null;
-                    row[i] = x != null ? x : DBNull.Value;
-                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}"); // для наглядности
-                }
-                else
-                {
-                    var x = text?.Tables?[l].Rows?[0][i];
-                    row[i] = x != null ? x : DBNull.Value;
-                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}");  // для наглядности
-                }
-               
-            }
-            dataTable.Rows.Add(row);
-        }
-        Console.WriteLine();
-        //вывод
-        //Console.WriteLine(text?.DataSetName);
-        //foreach (DataTable table in dataSet.Tables)
-        //{
-        //    Console.WriteLine(table.TableName);
 
-        //    foreach (DataRow stroka in table.Rows)
-        //    {
-        //        foreach (var cell in stroka.ItemArray)
-        //        {
-        //            Console.Write(" {0}\t\t", cell);
-        //        }
-        //        Console.WriteLine();
-        //    }
-        //    Console.WriteLine("==========================");
-        //}
-        //Console.Read();
+                    string[] itemSptlit = item.ToString().Split(":");
+                    dataTable.Columns.Add(itemSptlit[0], typeByNumber[Convert.ToInt32(itemSptlit[1])]);
+                }
+                foreach (DataColumn item in dataTable.Columns)
+                {
+                    item.AllowDBNull = true;
+                }
+                DataRow row = dataTable.NewRow();
+                for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
+                {
+                    if (dataTable.Columns[i].DataType != typeof(DateTime) && dataTable.Columns[i].DataType != typeof(string)
+                        && dataTable.Columns[i].DataType != typeof(Guid))
+                    {
+                        var x = text?.Tables?[l].Rows?[0][i] != null
+                            ? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString(), dataTable.Columns[i].DataType)
+                            : null;
+                        row[i] = x != null ? x : DBNull.Value;
+                        Console.WriteLine($"{row[i]}  - { row[i].GetType()}"); // для наглядности
+                    }
+                    else
+                    {
+                        var x = text?.Tables?[l].Rows?[0][i];
+                        row[i] = x != null ? x : DBNull.Value;
+                        Console.WriteLine($"{row[i]}  - { row[i].GetType()}");  // для наглядности
+                    }
+
+                }
+                dataTable.Rows.Add(row);
+            }
+            Console.WriteLine("---------------------------------------------");
+            //вывод
+            //Console.WriteLine(text?.DataSetName);
+            //foreach (DataTable table in dataSet.Tables)
+            //{
+            //    Console.WriteLine(table.TableName);
+
+            //    foreach (DataRow stroka in table.Rows)
+            //    {
+            //        foreach (var cell in stroka.ItemArray)
+            //        {
+            //            Console.Write(" {0}\t\t", cell);
+            //        }
+            //        Console.WriteLine();
+            //    }
+            //    Console.WriteLine("==========================");
+            //}
+            //Console.Read();
+        }
     }
 }
 public class Text
