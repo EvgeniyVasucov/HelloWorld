@@ -38,6 +38,7 @@ class Program
         {
             DataTable dataTable = new DataTable(text?.Tables?[l].TableName);
             dataSet.Tables.Add(dataTable); // добавляем таблицу в dataset
+            if (text?.Tables?[l].Columns == null) continue; 
             foreach (var item in text?.Tables?[l].Columns)
             {
                 string[] itemSptlit = item.ToString().Split(":");
@@ -48,6 +49,7 @@ class Program
                 item.AllowDBNull = true;
             }
             DataRow row = dataTable.NewRow();
+            if (text?.Tables?[l].Rows == null) continue;
             for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
             {
                 if (dataTable.Columns[i].DataType != typeof(DateTime) 
@@ -58,13 +60,13 @@ class Program
                         ? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString(), dataTable.Columns[i].DataType) 
                         : null;
                     row[i] = x != null ? x : DBNull.Value;
-                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}");
+                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}"); // для наглядности
                 }
                 else
                 {
                     var x = text?.Tables?[l].Rows?[0][i];
                     row[i] = x != null ? x : DBNull.Value;
-                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}");
+                    Console.WriteLine($"{row[i]}  - { row[i].GetType()}");  // для наглядности
                 }
                
             }
@@ -90,7 +92,6 @@ class Program
         //Console.Read();
     }
 }
-
 public class Text
 {
     public string? DataSetName { get; set; }
