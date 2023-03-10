@@ -29,6 +29,13 @@ class Program
         };
         HttpClient httpClient = new HttpClient();
 
+        string? path = @"C:\SomeDoc\content.txt";
+        FileInfo fileInf = new FileInfo(path);
+        if (fileInf.Exists)
+        {
+            File.Delete(path);
+        }
+
         string request = "https://keysystems.ru/files/misc/tasks/doc1.json";
         HttpResponseMessage response = (await httpClient.GetAsync(request)).EnsureSuccessStatusCode();
         string responseBody = await response.Content.ReadAsStringAsync();
@@ -50,7 +57,6 @@ class Program
                 if (text?.Tables?[l].Columns == null || text?.Tables?[l].Rows == null) continue; // проверка на null столбцов и строк 
                 foreach (var item in text?.Tables?[l].Columns)
                 {
-
                     string[] itemSptlit = item.ToString().Split(":");
                     dataTable.Columns.Add(itemSptlit[0], typeByNumber[Convert.ToInt32(itemSptlit[1])]);
                 }
@@ -65,39 +71,38 @@ class Program
                         && dataTable.Columns[i].DataType != typeof(Guid))
                     {
                         var x = text?.Tables?[l].Rows?[0][i] != null
-                            ? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString(), dataTable.Columns[i].DataType)
+                            ? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString()!, dataTable.Columns[i].DataType)
                             : null;
                         row[i] = x != null ? x : DBNull.Value;
-                        Console.WriteLine($"{row[i]}  - { row[i].GetType()}"); // для наглядности
                     }
                     else
                     {
                         var x = text?.Tables?[l].Rows?[0][i];
                         row[i] = x != null ? x : DBNull.Value;
-                        Console.WriteLine($"{row[i]}  - { row[i].GetType()}");  // для наглядности
                     }
-
                 }
                 dataTable.Rows.Add(row);
             }
-            Console.WriteLine("---------------------------------------------");
             //вывод
+            File.AppendAllText(path, $"\n{Convert.ToString(text?.DataSetName)}");
             //Console.WriteLine(text?.DataSetName);
-            //foreach (DataTable table in dataSet.Tables)
-            //{
-            //    Console.WriteLine(table.TableName);
-
-            //    foreach (DataRow stroka in table.Rows)
-            //    {
-            //        foreach (var cell in stroka.ItemArray)
-            //        {
-            //            Console.Write(" {0}\t\t", cell);
-            //        }
-            //        Console.WriteLine();
-            //    }
-            //    Console.WriteLine("==========================");
-            //}
-            //Console.Read();
+            foreach (DataTable table in dataSet.Tables)
+            {
+                File.AppendAllText(path, $"\n{Convert.ToString(table.TableName)}");
+                //Console.WriteLine(table.TableName);
+                foreach (DataRow row in table.Rows)
+                {
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        File.AppendAllText(path, $"\n{Convert.ToString(column)}");
+                        //Console.Write(column + " ");
+                        File.AppendAllText(path, $"\t{row[column]}");
+                        //Console.WriteLine(row[column]);
+                    }
+                    //Console.WriteLine();
+                }
+            }
+            //Console.WriteLine("==========================");
         }
     }
 }
