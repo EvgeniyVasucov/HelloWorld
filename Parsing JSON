@@ -29,7 +29,7 @@ class Program
         };
         HttpClient httpClient = new HttpClient();
 
-        string? path = @"C:\SomeDoc\content.txt";
+        string? path = @"C:\SomeDoc\content.html";
         FileInfo fileInf = new FileInfo(path);
         if (fileInf.Exists)
         {
