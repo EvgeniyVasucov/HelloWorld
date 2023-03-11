@@ -29,6 +29,13 @@ class Program
         };
         HttpClient httpClient = new HttpClient();
 
+        string dirName = @"C:\SomeDoc";
+        DirectoryInfo dirInfo = new DirectoryInfo(dirName);
+        if (!dirInfo.Exists)
+        {
+            dirInfo.Create();
+        }
+
         string? path = @"C:\SomeDoc\content.html";
         FileInfo fileInf = new FileInfo(path);
         if (fileInf.Exists)
