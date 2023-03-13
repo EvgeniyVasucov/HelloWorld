@@ -29,31 +29,26 @@ class Program
         };
         HttpClient httpClient = new HttpClient();
 
-        string dirName = @"C:\SomeDoc";
+        string dirName = @"D:\SomeDoc";
         DirectoryInfo dirInfo = new DirectoryInfo(dirName);
         if (!dirInfo.Exists)
         {
             dirInfo.Create();
         }
-
-        string? path = @"C:\SomeDoc\content.html";
-        FileInfo fileInf = new FileInfo(path);
-        if (fileInf.Exists)
-        {
-            File.Delete(path);
-        }
+        string? path1 = @"D:\SomeDoc\doc1.html";
+        string? path2 = @"D:\SomeDoc\doc2.html";
 
         string request = "https://keysystems.ru/files/misc/tasks/doc1.json";
         HttpResponseMessage response = (await httpClient.GetAsync(request)).EnsureSuccessStatusCode();
-        string responseBody = await response.Content.ReadAsStringAsync();
-        GetDataSet(responseBody);  // создание 1-й таблицы DataSet
+        string responseBody1 = await response.Content.ReadAsStringAsync();
+        GetDataSet(responseBody1, path1);  // создание 1-й таблицы DataSet и документа HTML 
 
         string request2 = "https://keysystems.ru/files/misc/tasks/doc2.json";
         HttpResponseMessage response2 = (await httpClient.GetAsync(request2)).EnsureSuccessStatusCode();
         string responseBody2 = await response2.Content.ReadAsStringAsync();
-        GetDataSet(responseBody2);  // создание 2-й таблицы DataSet
+        GetDataSet(responseBody2, path2);  // создание 2-й таблицы DataSet и документа HTML 
 
-        void GetDataSet(string responseBody)
+        void GetDataSet(string responseBody, string path)
         {
             Text text = JsonConvert.DeserializeObject<Text>(responseBody)!;
             DataSet dataSet = new DataSet(text.DataSetName);
@@ -91,25 +86,33 @@ class Program
                 dataTable.Rows.Add(row);
             }
             //вывод
-            File.AppendAllText(path, $"\n{Convert.ToString(text?.DataSetName)}");
-            //Console.WriteLine(text?.DataSetName);
+            FileInfo fileInf = new FileInfo(path);
+            if (fileInf.Exists)
+            {
+                File.Delete(path);
+            }
+            StreamWriter streamwriter = new StreamWriter(path);
+            streamwriter.WriteLine("<!DOCTYPE html><html>");
+            streamwriter.WriteLine("<head><meta charset='utf-8'><title>Таблица HTML</title></head>");
+            streamwriter.WriteLine($"<caption><b>{text?.DataSetName}</b></caption>");
             foreach (DataTable table in dataSet.Tables)
             {
-                File.AppendAllText(path, $"\n{Convert.ToString(table.TableName)}");
-                //Console.WriteLine(table.TableName);
+                streamwriter.WriteLine($"<caption><b> {table.TableName} </b></caption>");
+                streamwriter.WriteLine("<body><table>");
                 foreach (DataRow row in table.Rows)
                 {
                     foreach (DataColumn column in table.Columns)
                     {
-                        File.AppendAllText(path, $"\n{Convert.ToString(column)}");
-                        //Console.Write(column + " ");
-                        File.AppendAllText(path, $"\t{row[column]}");
-                        //Console.WriteLine(row[column]);
+                        streamwriter.WriteLine("<thead><tr>");
+                        streamwriter.WriteLine($"<td>{column}</td>");
+                        streamwriter.WriteLine("</tr></thead>");
+                        streamwriter.WriteLine($"<tbody><tr><td>{row[column]}</td></tr></tbody>");
+                        streamwriter.WriteLine("</tr>");
                     }
-                    //Console.WriteLine();
                 }
+                streamwriter.WriteLine("</table></body></html>");
             }
-            //Console.WriteLine("==========================");
+            streamwriter.Close();
         }
     }
 }
