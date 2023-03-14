@@ -33,7 +33,7 @@ class Program
         DirectoryInfo dirInfo = new DirectoryInfo(dirName);
         if (!dirInfo.Exists)
         {
-            dirInfo.Create();
+            dirInfo.Create(); //создание файла SomeDoc
         }
         string? path1 = @"D:\SomeDoc\doc1.html";
         string? path2 = @"D:\SomeDoc\doc2.html";
@@ -55,26 +55,19 @@ class Program
             for (int l = 0; l < text.Tables.Count(); l++)
             {
                 DataTable dataTable = new DataTable(text?.Tables?[l].TableName);
-                dataSet.Tables.Add(dataTable); // добавляем таблицу в dataset
+                dataSet.Tables.Add(dataTable); // добавление таблицу в dataset
                 if (text?.Tables?[l].Columns == null || text?.Tables?[l].Rows == null) continue; // проверка на null столбцов и строк 
                 foreach (var item in text?.Tables?[l].Columns)
                 {
                     string[] itemSptlit = item.ToString().Split(":");
-                    dataTable.Columns.Add(itemSptlit[0], typeByNumber[Convert.ToInt32(itemSptlit[1])]);
-                }
-                foreach (DataColumn item in dataTable.Columns)
-                {
-                    item.AllowDBNull = true;
+                    dataTable.Columns.Add(itemSptlit[0], typeByNumber[Convert.ToInt32(itemSptlit[1])]); //добавление колон
                 }
                 DataRow row = dataTable.NewRow();
                 for (int i = 0; i < text?.Tables?[l].Columns?.Length; i++)
                 {
-                    if (dataTable.Columns[i].DataType != typeof(DateTime) && dataTable.Columns[i].DataType != typeof(string)
-                        && dataTable.Columns[i].DataType != typeof(Guid))
+                    if (dataTable.Columns[i].DataType != typeof(DateTime) && dataTable.Columns[i].DataType != typeof(string) && dataTable.Columns[i].DataType != typeof(Guid))
                     {
-                        var x = text?.Tables?[l].Rows?[0][i] != null
-                            ? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString()!, dataTable.Columns[i].DataType)
-                            : null;
+                        var x = text?.Tables?[l].Rows?[0][i] != null? JsonConvert.DeserializeObject(text?.Tables?[l].Rows[0][i].ToString()!, dataTable.Columns[i].DataType): null;
                         row[i] = x != null ? x : DBNull.Value;
                     }
                     else
@@ -83,31 +76,33 @@ class Program
                         row[i] = x != null ? x : DBNull.Value;
                     }
                 }
-                dataTable.Rows.Add(row);
+                dataTable.Rows.Add(row); //добавление строк
             }
-            //вывод
+            //вывод в HTML документ
             FileInfo fileInf = new FileInfo(path);
             if (fileInf.Exists)
             {
                 File.Delete(path);
             }
             StreamWriter streamwriter = new StreamWriter(path);
-            streamwriter.WriteLine("<!DOCTYPE html><html>");
-            streamwriter.WriteLine("<head><meta charset='utf-8'><title>Таблица HTML</title></head>");
-            streamwriter.WriteLine($"<caption><b>{text?.DataSetName}</b></caption>");
+            streamwriter.WriteLine($"<!DOCTYPE html><html><head><meta charset='utf-8'><title>{text?.DataSetName}</title>");
+            streamwriter.WriteLine("<style>td{ width: 50px;height: 50px; border: solid 1px silver;text - align:center;}</style></head>");
+            //streamwriter.WriteLine($"<caption><b>{text?.DataSetName}</b></caption>");
             foreach (DataTable table in dataSet.Tables)
             {
                 streamwriter.WriteLine($"<caption><b> {table.TableName} </b></caption>");
                 streamwriter.WriteLine("<body><table>");
                 foreach (DataRow row in table.Rows)
                 {
+                    streamwriter.WriteLine("<thead>");
                     foreach (DataColumn column in table.Columns)
                     {
-                        streamwriter.WriteLine("<thead><tr>");
-                        streamwriter.WriteLine($"<td>{column}</td>");
-                        streamwriter.WriteLine("</tr></thead>");
-                        streamwriter.WriteLine($"<tbody><tr><td>{row[column]}</td></tr></tbody>");
-                        streamwriter.WriteLine("</tr>");
+                        streamwriter.WriteLine($"<td style='background-color:grey;'>{column}</td>");
+                    }
+                    streamwriter.WriteLine("</thead>");
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        streamwriter.WriteLine($"<td>{row[column]}</td>");
                     }
                 }
                 streamwriter.WriteLine("</table></body></html>");
@@ -116,6 +111,7 @@ class Program
         }
     }
 }
+// дополнительные классы для распознания JSON
 public class Text
 {
     public string? DataSetName { get; set; }
