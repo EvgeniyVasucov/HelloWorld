@@ -1,0 +1,38 @@
+using System.Text.RegularExpressions;
+
+Programs x = new Programs();
+x.Les1();
+Console.WriteLine("--------------------");
+x.Les2();
+ class Programs
+{
+    public void Les1()
+    {
+        string sum = "25 + 45 = ";
+        Console.WriteLine(sum);
+        Regex regex1 = new Regex(@"\d{2}");
+        MatchCollection matches = regex1.Matches(sum);
+        List<int> number = new List<int>();
+        foreach (Match match in matches)
+        {
+            number.Add(Convert.ToInt32(match.Value));
+        }
+        Console.WriteLine($"{number[1]} + {number[0]} = {number[1] + number[0]}");
+    }
+    public void Les2()
+    {
+        List<int> nums = new List<int>() { 4, 1, 6, 7, 0, 5, 6, 0, 4, 0, 6, 5, 9, 0, 1 };
+        for(int i = 0; i<nums.Count(); i++)
+        {
+            if(nums[i]==0)
+            {
+                nums.RemoveRange(i-2, 2);
+            }
+        }
+        foreach (var s in nums)
+        {
+            Console.Write(s + " ");
+        }
+    }
+}
+
