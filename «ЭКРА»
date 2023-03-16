@@ -4,6 +4,8 @@ Programs x = new Programs();
 x.Les1();
 Console.WriteLine("--------------------");
 x.Les2();
+Console.ReadLine();
+
  class Programs
 {
     public void Les1()
